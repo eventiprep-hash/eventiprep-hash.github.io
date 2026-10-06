@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recognize Our Team</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f4f2;
+      color: #222;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 24px 18px 40px;
+    }
+
+    header {
+      text-align: center;
+      padding: 30px 10px 24px;
+    }
+
+    .logo {
+      font-size: 14px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #777;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 32px;
+    }
+
+    .intro {
+      font-size: 17px;
+      line-height: 1.5;
+      color: #666;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 14px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      padding: 17px;
+      margin-top: 10px;
+      font-size: 17px;
+      font-weight: bold;
+      background: #222;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .department {
+      text-align: left;
+    }
+
+    .department-name {
+      font-size: 20px;
+    }
+
+    .department-description {
+      color: #777;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .back {
+      background: transparent;
+      color: #555;
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
+    }
+
+    .employee {
+      background: #fafafa;
+      color: #222;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    .tip-button {
+      background: #222;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .thank-you {
+      text-align: center;
+      padding: 30px 10px;
+    }
+
+    .amounts {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .amounts button {
+      margin: 0;
+    }
+
+    footer {
+      text-align: center;
+      color: #999;
+      font-size: 12px;
+      margin-top: 35px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- HOME -->
+  <section id="home">
+
+    <header>
+      <div class="logo">Guest Recognition</div>
+
+      <h1>Recognize Our Team</h1>
+
+      <p class="intro">
+        Did someone make your stay better?
+        Choose their department below to recognize
+        a member of our team.
+      </p>
+    </header>
+
+    <div class="card">
+      <button class="department" onclick="showDepartment('laundry')">
+        <div class="department-name">Laundry</div>
+        <div class="department-description">
+          Recognize our laundry team
+        </div>
+      </button>
+
+      <button class="department" onclick="showDepartment('housekeeping')">
+        <div class="department-name">Housekeeping</div>
+        <div class="department-description">
+          Recognize the team that prepared your room
+        </div>
+      </button>
+
+      <button class="department" onclick="showDepartment('frontdesk')">
+        <div class="department-name">Front Desk</div>
+        <div class="department-description">
+          Recognize our front desk team
+        </div>
+      </button>
+
+      <button class="department" onclick="showDepartment('maintenance')">
+        <div class="department-name">Maintenance</div>
+        <div class="department-description">
+          Recognize our maintenance team
+        </div>
+      </button>
+    </div>
+
+  </section>
+
+
+  <!-- STAFF SELECTION -->
+
+  <section id="staff" class="hidden">
+
+    <button class="back" onclick="goHome()">
+      ← Back
+    </button>
+
+    <header>
+      <div class="logo" id="departmentTitle"></div>
+
+      <h1>Select a Team Member</h1>
+
+      <p class="intro">
+        Who would you like to recognize?
+      </p>
+    </header>
+
+    <div class="card" id="employeeList"></div>
+
+  </section>
+
+
+  <!-- TIP PAGE -->
+
+  <section id="tip" class="hidden">
+
+    <button class="back" onclick="goStaff()">
+      ← Back
+    </button>
+
+    <div class="card thank-you">
+
+      <div class="logo">Thank You</div>
+
+      <h1 id="employeeName"></h1>
+
+      <p class="intro">
+        Thank you for recognizing a member of our team.
+      </p>
+
+      <p>
+        Choose a recognition amount:
+      </p>
+
+      <div class="amounts">
+
+        <button onclick="tipSelected(5)">
+          $5
+        </button>
+
+        <button onclick="tipSelected(10)">
+          $10
+        </button>
+
+        <button onclick="tipSelected(20)">
+          $20
+        </button>
+
+      </div>
+
+      <button class="tip-button" onclick="tipSelected('other')">
+        Other Amount
+      </button>
+
+      <p id="paymentMessage" class="intro hidden">
+        Payment processing will be connected here.
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <footer>
+    Guest recognition system prototype
+  </footer>
+
+</div>
+
+
+<script>
+
+  const employees = {
+
+    laundry: [
+      "Sarah",
+      "Mike"
+    ],
+
+    housekeeping: [
+      "Sarah",
+      "Mike",
+      "Emily"
+    ],
+
+    frontdesk: [
+      "Jessica",
+      "David"
+    ],
+
+    maintenance: [
+      "John"
+    ]
+
+  };
+
+
+  const departmentNames = {
+
+    laundry: "Laundry",
+
+    housekeeping: "Housekeeping",
+
+    frontdesk: "Front Desk",
+
+    maintenance: "Maintenance"
+
+  };
+
+
+  let currentDepartment = "";
+  let currentEmployee = "";
+
+
+  function showDepartment(department) {
+
+    currentDepartment = department;
+
+    document.getElementById("home").classList.add("hidden");
+
+    document.getElementById("staff").classList.remove("hidden");
+
+    document.getElementById("departmentTitle").innerText =
+      departmentNames[department];
+
+    const list = document.getElementById("employeeList");
+
+    list.innerHTML = "";
+
+    employees[department].forEach(function(employee) {
+
+      const button = document.createElement("button");
+
+      button.className = "employee";
+
+      button.innerText = employee;
+
+      button.onclick = function() {
+        selectEmployee(employee);
+      };
+
+      list.appendChild(button);
+
+    });
+
+  }
+
+
+  function selectEmployee(employee) {
+
+    currentEmployee = employee;
+
+    document.getElementById("staff").classList.add("hidden");
+
+    document.getElementById("tip").classList.remove("hidden");
+
+    document.getElementById("employeeName").innerText =
+      "Thank " + employee;
+
+  }
+
+
+  function tipSelected(amount) {
+
+    const message =
+      document.getElementById("paymentMessage");
+
+    message.classList.remove("hidden");
+
+    if (amount === "other") {
+
+      message.innerText =
+        "Other amount selected for " +
+        currentEmployee +
+        ". Payment processing will be connected here.";
+
+    } else {
+
+      message.innerText =
+        "$" + amount +
+        " recognition selected for " +
+        currentEmployee +
+        ".";
+
+    }
+
+  }
+
+
+  function goHome() {
+
+    document.getElementById("staff").classList.add("hidden");
+
+    document.getElementById("home").classList.remove("hidden");
+
+  }
+
+
+  function goStaff() {
+
+    document.getElementById("tip").classList.add("hidden");
+
+    document.getElementById("staff").classList.remove("hidden");
+
+  }
+
+</script>
+
+</body>
+</html>
