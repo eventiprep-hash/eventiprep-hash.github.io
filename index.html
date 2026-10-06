@@ -216,20 +216,20 @@
     </div>
 
 
-    <!-- REVIEW -->
-    <div id="review" class="card" style="display:none;">
-        <h2>Review <span id="ReviewEmployee"></span></h2>
+    <!-- COMPLIMENT -->
+    <div id="compliment" class="card" style="display:none;">
+        <h2>Compliment <span id="complimentEmployee"></span></h2>
 
         <p>
-            Leave us a comment.
+            Tell us what they did that made your stay better.
         </p>
 
-        <textarea id="reviewText"
-                  placeholder="Write your review here..."></textarea>
+        <textarea id="complimentText"
+                  placeholder="Write your compliment here..."></textarea>
 
-        <button class="button review-button"
-                onclick="submitReview()">
-            ⭐ Submit Review
+        <button class="button compliment-button"
+                onclick="submitCompliment()">
+            ⭐ Submit Compliment
         </button>
 
         <button class="button back" onclick="goRecognition()">
@@ -266,11 +266,11 @@
 
 const employees = {
 
-    laundry: ["Susan", "Wyatt"],
+    laundry: ["Sarah", "Mike"],
 
-    housekeeping: ["Amber", "Angie", "Tre", "Shayne"],
+    housekeeping: ["Sarah", "Mike", "Emily"],
 
-    frontdesk: ["Sarah", "Jena", "Mindy"],
+    frontdesk: ["Jessica", "David"],
 
     maintenance: ["John"]
 
@@ -364,26 +364,26 @@ function showTip() {
 }
 
 
-function showReview() {
+function showCompliment() {
 
     hideAll();
 
-    document.getElementById("review").style.display = "block";
+    document.getElementById("compliment").style.display = "block";
 
-    document.getElementById("reviewEmployee").textContent =
+    document.getElementById("complimentEmployee").textContent =
         currentEmployee;
 
 }
 
 
-function submitReview() {
+function submitCompliment() {
 
-    const review =
-        document.getElementById("reviewText").value.trim();
+    const compliment =
+        document.getElementById("complimentText").value.trim();
 
-    if (review === "") {
+    if (compliment === "") {
 
-        alert("Please write a review before submitting.");
+        alert("Please write a compliment before submitting.");
 
         return;
 
@@ -401,7 +401,7 @@ function submitReview() {
        For now, we simply show confirmation.
     */
 
-    document.getElementById("reviewText").value = "";
+    document.getElementById("complimentText").value = "";
 
     hideAll();
 
