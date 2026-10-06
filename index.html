@@ -1,282 +1,300 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recognize Our Team</title>
 
-<title>Recognize Our Team</title>
-
-<style>
+  <style>
     * {
-        box-sizing: border-box;
+      box-sizing: border-box;
     }
 
     body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #f4f4f4;
-        color: #222;
-    }
-
-    header {
-        background: #222;
-        color: white;
-        padding: 25px 20px;
-        text-align: center;
-    }
-
-    header h1 {
-        margin: 0;
-        font-size: 28px;
-    }
-
-    header p {
-        margin: 8px 0 0;
-        color: #ddd;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f4f2;
+      color: #222;
     }
 
     .container {
-        max-width: 600px;
-        margin: auto;
-        padding: 25px 20px;
+      max-width: 600px;
+      margin: auto;
+      padding: 24px 18px 40px;
+    }
+
+    header {
+      text-align: center;
+      padding: 30px 10px 24px;
+    }
+
+    .logo {
+      font-size: 14px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #777;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 32px;
+    }
+
+    .intro {
+      font-size: 17px;
+      line-height: 1.5;
+      color: #666;
     }
 
     .card {
-        background: white;
-        border-radius: 14px;
-        padding: 25px;
-        margin-bottom: 18px;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 14px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
     }
 
-    h2 {
-        margin-top: 0;
-        text-align: center;
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      padding: 17px;
+      margin-top: 10px;
+      font-size: 17px;
+      font-weight: bold;
+      background: #222;
+      color: white;
+      cursor: pointer;
     }
 
-    .button {
-        width: 100%;
-        padding: 18px;
-        margin: 10px 0;
-        border: none;
-        border-radius: 10px;
-        font-size: 17px;
-        cursor: pointer;
-        background: #333;
-        color: white;
+    button:hover {
+      opacity: 0.9;
     }
 
-    .button:hover {
-        background: #555;
+    .department {
+      text-align: left;
     }
 
-    .recognition-button {
-        background: #333;
-        min-height: 70px;
+    .department-name {
+      font-size: 20px;
     }
 
-    .tip-button {
-        background: #333;
-    }
-
-    .compliment-button {
-        background: #555;
-    }
-
-    textarea {
-        width: 100%;
-        min-height: 130px;
-        padding: 14px;
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        font-size: 16px;
-        resize: vertical;
-        margin-top: 10px;
+    .department-description {
+      color: #777;
+      font-size: 14px;
+      margin-top: 4px;
     }
 
     .back {
-        background: transparent;
-        color: #333;
-        border: 1px solid #bbb;
+      background: transparent;
+      color: #555;
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
     }
 
-    .success {
-        text-align: center;
-        padding: 20px 0;
+    .employee {
+      background: #fafafa;
+      color: #222;
+      border: 1px solid #ddd;
+      text-align: left;
     }
 
-    .success-icon {
-        font-size: 50px;
-        margin-bottom: 10px;
+    .tip-button {
+      background: #222;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .thank-you {
+      text-align: center;
+      padding: 30px 10px;
+    }
+
+    .amounts {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .amounts button {
+      margin: 0;
     }
 
     footer {
-        text-align: center;
-        color: #777;
-        font-size: 13px;
-        padding: 25px;
+      text-align: center;
+      color: #999;
+      font-size: 12px;
+      margin-top: 35px;
     }
-</style>
+  </style>
 </head>
 
 <body>
 
-<header>
-    <h1>Recognize Our Team</h1>
-    <p>Let us know when someone made your stay special.</p>
-</header>
-
 <div class="container">
 
-    <!-- HOME -->
-    <div id="home" class="card">
-        <h2>Choose a Department</h2>
+  <!-- HOME -->
+  <section id="home">
 
-        <button class="button" onclick="showDepartment('laundry')">
-            🧺 Laundry
-        </button>
+    <header>
+      <div class="logo">Guest Recognition</div>
 
-        <button class="button" onclick="showDepartment('housekeeping')">
-            🧹 Housekeeping
-        </button>
+      <h1>Recognize Our Team</h1>
 
-        <button class="button" onclick="showDepartment('frontdesk')">
-            🛎️ Front Desk
-        </button>
+      <p class="intro">
+        Choose their department below to recognize
+        a member of our team.
+      </p>
+    </header>
 
-        <button class="button" onclick="showDepartment('maintenance')">
-            🔧 Maintenance
-        </button>
-    </div>
-
-
-    <!-- EMPLOYEES -->
-    <div id="employees" class="card" style="display:none;">
-        <h2 id="departmentTitle"></h2>
-
-        <div id="employeeList"></div>
-
-        <button class="button back" onclick="goHome()">
-            ← Back
-        </button>
-    </div>
-
-
-    <!-- RECOGNITION CHOICE -->
-    <div id="recognition" class="card" style="display:none;">
-        <h2>Recognize <span id="selectedEmployee"></span></h2>
-
-        <p style="text-align:center;">
-            How would you like to recognize their work?
-        </p>
-
-        <button class="button recognition-button"
-                onclick="showTip()">
-            💵 Leave a Tip
-        </button>
-
-        <button class="button recognition-button"
-                onclick="showCompliment()">
-            ⭐ Leave a Compliment
-        </button>
-
-        <button class="button back" onclick="goStaff()">
-            ← Choose Someone Else
-        </button>
-    </div>
-
-
-    <!-- TIP -->
-    <div id="tip" class="card" style="display:none;">
-        <h2>Thank <span id="tipEmployee"></span></h2>
-
-        <p style="text-align:center;">
-            Choose a tip amount.
-        </p>
-
-        <button class="button tip-button" onclick="tipSelected(5)">
-            $5
-        </button>
-
-        <button class="button tip-button" onclick="tipSelected(10)">
-            $10
-        </button>
-
-        <button class="button tip-button" onclick="tipSelected(20)">
-            $20
-        </button>
-
-        <button class="button tip-button" onclick="tipSelected('other')">
-            Other Amount
-        </button>
-
-        <button class="button back" onclick="goRecognition()">
-            ← Back
-        </button>
-    </div>
-
-
-    <!-- COMPLIMENT -->
-    <div id="compliment" class="card" style="display:none;">
-        <h2>Compliment <span id="complimentEmployee"></span></h2>
-
-        <p>
-            Tell us what they did that made your stay better.
-        </p>
-
-        <textarea id="complimentText"
-                  placeholder="Write your compliment here..."></textarea>
-
-        <button class="button compliment-button"
-                onclick="submitCompliment()">
-            ⭐ Submit Compliment
-        </button>
-
-        <button class="button back" onclick="goRecognition()">
-            ← Back
-        </button>
-    </div>
-
-
-    <!-- SUCCESS -->
-    <div id="success" class="card" style="display:none;">
-        <div class="success">
-            <div class="success-icon">⭐</div>
-
-            <h2>Thank You!</h2>
-
-            <p>
-                Your recognition means a lot to our team.
-            </p>
-
-            <button class="button" onclick="goHome()">
-                Done
-            </button>
+    <div class="card">
+      <button class="department" onclick="showDepartment('laundry')">
+        <div class="department-name">Laundry</div>
+        <div class="department-description">
+          Recognize our laundry team
         </div>
+      </button>
+
+      <button class="department" onclick="showDepartment('housekeeping')">
+        <div class="department-name">Housekeeping</div>
+        <div class="department-description">
+          Recognize the team that prepared your room
+        </div>
+      </button>
+
+      <button class="department" onclick="showDepartment('frontdesk')">
+        <div class="department-name">Front Desk</div>
+        <div class="department-description">
+          Recognize our front desk team
+        </div>
+      </button>
+
+      <button class="department" onclick="showDepartment('maintenance')">
+        <div class="department-name">Maintenance</div>
+        <div class="department-description">
+          Recognize our maintenance team
+        </div>
+      </button>
     </div>
+
+  </section>
+
+
+  <!-- STAFF SELECTION -->
+
+  <section id="staff" class="hidden">
+
+    <button class="back" onclick="goHome()">
+      ← Back
+    </button>
+
+    <header>
+      <div class="logo" id="departmentTitle"></div>
+
+      <h1>Select a Team Member</h1>
+
+      <p class="intro">
+        Who would you like to recognize?
+      </p>
+    </header>
+
+    <div class="card" id="employeeList"></div>
+
+  </section>
+
+
+  <!-- TIP PAGE -->
+
+  <section id="tip" class="hidden">
+
+    <button class="back" onclick="goStaff()">
+      ← Back
+    </button>
+
+    <div class="card thank-you">
+
+      <div class="logo">Thank You</div>
+
+      <h1 id="employeeName"></h1>
+
+      <p class="intro">
+        Thank you for recognizing a member of our team.
+      </p>
+
+      <p>
+        Choose a recognition amount:
+      </p>
+
+      <div class="amounts">
+
+        <button onclick="tipSelected(5)">
+          $5
+        </button>
+
+        <button onclick="tipSelected(10)">
+          $10
+        </button>
+
+        <button onclick="tipSelected(20)">
+          $20
+        </button>
+
+      </div>
+
+      <button class="tip-button" onclick="tipSelected('other')">
+        Other Amount
+      </button>
+
+      <p id="paymentMessage" class="intro hidden">
+        Payment processing will be connected here.
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <footer>
+    Guest recognition system prototype
+  </footer>
 
 </div>
-
-<footer>
-    Guest recognition system prototype
-</footer>
 
 
 <script>
 
-const employees = {
+  const employees = {
 
-    laundry: ["Sarah", "Mike"],
+    laundry: [
+      "Susan",
+      "Wyatt"
+    ],
 
-    housekeeping: ["Sarah", "Mike", "Emily"],
+    housekeeping: [
+      "Amber",
+      "Angie",
+      "Tre"
+       "Shayne",
+    ],
 
-    frontdesk: ["Jessica", "David"],
+    frontdesk: [
+      "Sarah",
+      "Jena",
+     "Mindy",
+    ],
 
-    maintenance: ["John"]
+    maintenance: [
+      "John"
+    ]
 
-};
+  };
 
-const departmentNames = {
+
+  const departmentNames = {
 
     laundry: "Laundry",
 
@@ -286,34 +304,23 @@ const departmentNames = {
 
     maintenance: "Maintenance"
 
-};
-
-let currentDepartment = "";
-let currentEmployee = "";
+  };
 
 
-function hideAll() {
-
-    document.getElementById("home").style.display = "none";
-    document.getElementById("employees").style.display = "none";
-    document.getElementById("recognition").style.display = "none";
-    document.getElementById("tip").style.display = "none";
-    document.getElementById("compliment").style.display = "none";
-    document.getElementById("success").style.display = "none";
-
-}
+  let currentDepartment = "";
+  let currentEmployee = "";
 
 
-function showDepartment(department) {
+  function showDepartment(department) {
 
     currentDepartment = department;
 
-    hideAll();
+    document.getElementById("home").classList.add("hidden");
 
-    document.getElementById("employees").style.display = "block";
+    document.getElementById("staff").classList.remove("hidden");
 
-    document.getElementById("departmentTitle").textContent =
-        departmentNames[department];
+    document.getElementById("departmentTitle").innerText =
+      departmentNames[department];
 
     const list = document.getElementById("employeeList");
 
@@ -321,130 +328,80 @@ function showDepartment(department) {
 
     employees[department].forEach(function(employee) {
 
-        const button = document.createElement("button");
+      const button = document.createElement("button");
 
-        button.className = "button";
+      button.className = "employee";
 
-        button.textContent = employee;
+      button.innerText = employee;
 
-        button.onclick = function() {
-            selectEmployee(employee);
-        };
+      button.onclick = function() {
+        selectEmployee(employee);
+      };
 
-        list.appendChild(button);
+      list.appendChild(button);
 
     });
 
-}
+  }
 
 
-function selectEmployee(employee) {
+  function selectEmployee(employee) {
 
     currentEmployee = employee;
 
-    hideAll();
+    document.getElementById("staff").classList.add("hidden");
 
-    document.getElementById("recognition").style.display = "block";
+    document.getElementById("tip").classList.remove("hidden");
 
-    document.getElementById("selectedEmployee").textContent =
-        employee;
+    document.getElementById("employeeName").innerText =
+      "Thank " + employee;
 
-}
-
-
-function showTip() {
-
-    hideAll();
-
-    document.getElementById("tip").style.display = "block";
-
-    document.getElementById("tipEmployee").textContent =
-        currentEmployee;
-
-}
+  }
 
 
-function showCompliment() {
+  function tipSelected(amount) {
 
-    hideAll();
+    const message =
+      document.getElementById("paymentMessage");
 
-    document.getElementById("compliment").style.display = "block";
+    message.classList.remove("hidden");
 
-    document.getElementById("complimentEmployee").textContent =
-        currentEmployee;
+    if (amount === "other") {
 
-}
+      message.innerText =
+        "Other amount selected for " +
+        currentEmployee +
+        ". Payment processing will be connected here.";
 
+    } else {
 
-function submitCompliment() {
-
-    const compliment =
-        document.getElementById("complimentText").value.trim();
-
-    if (compliment === "") {
-
-        alert("Please write a compliment before submitting.");
-
-        return;
+      message.innerText =
+        "$" + amount +
+        " recognition selected for " +
+        currentEmployee +
+        ".";
 
     }
 
-    /*
-       Later this is where we will send:
-
-       Department
-       Employee
-       Compliment
-
-       to our database.
-
-       For now, we simply show confirmation.
-    */
-
-    document.getElementById("complimentText").value = "";
-
-    hideAll();
-
-    document.getElementById("success").style.display = "block";
-
-}
+  }
 
 
-function tipSelected(amount) {
+  function goHome() {
 
-    alert(
-        "Tip selected: $" +
-        amount +
-        "\nEmployee: " +
-        currentEmployee
-    );
+    document.getElementById("staff").classList.add("hidden");
 
-}
+    document.getElementById("home").classList.remove("hidden");
+
+  }
 
 
-function goHome() {
+  function goStaff() {
 
-    hideAll();
+    document.getElementById("tip").classList.add("hidden");
 
-    document.getElementById("home").style.display = "block";
+    document.getElementById("staff").classList.remove("hidden");
 
-}
-
-
-function goStaff() {
-
-    showDepartment(currentDepartment);
-
-}
-
-
-function goRecognition() {
-
-    hideAll();
-
-    document.getElementById("recognition").style.display = "block";
-
-}
+  }
 
 </script>
 
