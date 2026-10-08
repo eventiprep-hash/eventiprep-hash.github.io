@@ -392,6 +392,13 @@
 
 
 <script>
+const SUPABASE_URL = "https://yuhayqoqikszpgalyyji.supabase.co";
+const SUPABASE_KEY = "sb_publishable_rwW3x1tgFX0TW3sP8U2mXg_6hb_nsCI";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
 
 const employees = {
 
