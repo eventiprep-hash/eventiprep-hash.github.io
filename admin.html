@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Team Recognition | Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    padding: 20px;
+    background: #f3f5f7;
+    color: #243044;
+    font-family: Arial, sans-serif;
+}
+main { max-width: 850px; margin: 30px auto; }
+.card {
+    background: white;
+    padding: 24px;
+    border-radius: 14px;
+    box-shadow: 0 3px 14px #0000000d;
+    margin-bottom: 18px;
+}
+h1 { margin-top: 0; font-size: 26px; }
+h2 { font-size: 19px; }
+input, button {
+    width: 100%;
+    padding: 13px;
+    margin: 7px 0;
+    border-radius: 8px;
+    font-size: 16px;
+}
+input { border: 1px solid #ccd3dd; }
+button {
+    border: 0;
+    background: #243b63;
+    color: white;
+    cursor: pointer;
+}
+button:disabled { opacity: .6; }
+.muted { color: #687386; font-size: 14px; }
+#message { white-space: pre-wrap; }
+.review {
+    border: 1px solid #e0e5ec;
+    border-radius: 10px;
+    padding: 16px;
+    margin: 12px 0;
+    overflow-wrap: anywhere;
+}
+.stars { color: #d99000; font-size: 20px; }
+.meta { color: #687386; font-size: 13px; }
+.hidden { display: none; }
+</style>
+</head>
+<body>
+<main>
+    <section class="card">
+        <h1>Team Recognition</h1>
+        <p class="muted">Private management dashboard</p>
+        <p id="message" role="status" aria-live="polite"></p>
+    </section>
+
+    <section id="loginCard" class="card">
+        <h2>Administrator login</h2>
+        <form id="loginForm">
+            <input id="email" type="email"
+                placeholder="Administrator email" required
+                autocomplete="username">
+            <input id="password" type="password"
+                placeholder="Password" required
+                autocomplete="current-password">
+            <button id="loginButton" type="submit">Sign in</button>
+        </form>
+    </section>
+
+    <section id="dashboard" class="card hidden">
+        <h2>Guest reviews</h2>
+        <button id="refreshButton" type="button">Refresh reviews</button>
+        <button id="logoutButton" type="button">Sign out</button>
+        <p id="reviewCount" class="muted"></p>
+        <div id="reviews"></div>
+    </section>
+</main>
+
+<script>
+const SUPABASE_URL = "https://yuhayqoqikszpgalyyji.supabase.co";
+const SUPABASE_KEY = "sb_publishable_rwW3x1tgFX0TW3sP8U2mXg_6hb_nsCI";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+const message = document.getElementById("message");
+const loginCard = document.getElementById("loginCard");
+const dashboard = document.getElementById("dashboard");
+const reviewsContainer = document.getElementById("reviews");
+
+function showMessage(text) {
+    message.textContent = text;
+}
+
+function showSignedIn(signedIn) {
+    loginCard.classList.toggle("hidden", signedIn);
+    dashboard.classList.toggle("hidden", !signedIn);
+}
+
+function friendlyDate(value) {
+    const date = new Date(value);
+    return Number.isNaN(date.getTime())
+        ? "Date unavailable"
+        : date.toLocaleString();
+}
+
+async function loadReviews() {
+    reviewsContainer.replaceChildren();
+    document.getElementById("reviewCount").textContent =
+        "Loading reviews...";
+    showMessage("");
+
+    const { data, error } = await supabaseClient
+        .from("reviews")
+        .select("id, department, employee, rating, review, created_at")
+        .order("created_at", { ascending: false })
+        .limit(200);
+
+    if (error) {
+        document.getElementById("reviewCount").textContent = "";
+        showMessage("Could not load reviews: " + error.message);
+        return;
+    }
+
+    document.getElementById("reviewCount").textContent =
+        data.length + " review(s) shown";
+
+    if (data.length === 0) {
+        reviewsContainer.textContent = "No reviews found yet.";
+        return;
+    }
+
+    data.forEach(function(item) {
+        const card = document.createElement("article");
+        card.className = "review";
+
+        const heading = document.createElement("h2");
+        heading.textContent =
+            item.employee + " — " + item.department;
+
+        const stars = document.createElement("div");
+        stars.className = "stars";
+        stars.textContent =
+            "★".repeat(item.rating) + "☆".repeat(5 - item.rating);
+
+        const reviewText = document.createElement("p");
+        reviewText.textContent = item.review;
+
+        const date = document.createElement("p");
+        date.className = "meta";
+        date.textContent = friendlyDate(item.created_at);
+
+        card.append(heading, stars, reviewText, date);
+        reviewsContainer.appendChild(card);
+    });
+}
+
+document.getElementById("loginForm").addEventListener(
+    "submit", async function(event) {
+        event.preventDefault();
+
+        const button = document.getElementById("loginButton");
+        button.disabled = true;
+        showMessage("Signing in...");
+
+        try {
+            const { error } = await supabaseClient.auth.signInWithPassword({
+                email: document.getElementById("email").value.trim(),
+                password: document.getElementById("password").value
+            });
+
+            if (error) throw error;
+
+            showSignedIn(true);
+            await loadReviews();
+        } catch (error) {
+            showMessage("Sign-in failed: " + error.message);
+        } finally {
+            button.disabled = false;
+        }
+    }
+);
+
+document.getElementById("refreshButton").addEventListener(
+    "click", loadReviews
+);
+
+document.getElementById("logoutButton").addEventListener(
+    "click", async function() {
+        await supabaseClient.auth.signOut();
+        showSignedIn(false);
+        reviewsContainer.replaceChildren();
+        showMessage("You have signed out.");
+    }
+);
+
+async function restoreSession() {
+    const { data, error } = await supabaseClient.auth.getSession();
+
+    if (error) {
+        showMessage("Could not check your session.");
+        return;
+    }
+
+    if (data.session) {
+        showSignedIn(true);
+        await loadReviews();
+    }
+}
+
+restoreSession();
+</script>
+</body>
+</html>
