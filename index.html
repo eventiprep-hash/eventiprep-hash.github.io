@@ -115,6 +115,37 @@
         font-size: 13px;
         padding: 25px;
     }
+.rating {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.stars {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.star {
+    border: none;
+    background: transparent;
+    font-size: 42px;
+    color: #ccc;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    width: auto;
+}
+
+.star.selected {
+    color: #f5b301;
+}
+
+#ratingLabel {
+    margin-top: 8px;
+    color: #666;
+    font-size: 14px;
+}
 </style>
 </head>
 
@@ -214,6 +245,22 @@
         </button>
     </div>
 
+<div class="rating">
+    <p>How would you rate your experience?</p>
+
+    <div class="stars">
+        <button class="star" onclick="selectRating(1)">★</button>
+        <button class="star" onclick="selectRating(2)">★</button>
+        <button class="star" onclick="selectRating(3)">★</button>
+        <button class="star" onclick="selectRating(4)">★</button>
+        <button class="star" onclick="selectRating(5)">★</button>
+    </div>
+
+    <div id="ratingLabel">
+        Select a rating
+    </div>
+</div>
+
 
     <!-- REVIEW -->
     <div id="review" class="card" style="display:none;">
@@ -302,6 +349,35 @@ function hideAll() {
 
 }
 
+let currentRating = 0;
+
+function selectRating(rating) {
+
+    currentRating = rating;
+
+    const stars = document.querySelectorAll(".star");
+
+    stars.forEach(function(star, index) {
+
+        if (index < rating) {
+            star.classList.add("selected");
+        } else {
+            star.classList.remove("selected");
+        }
+
+    });
+
+    const labels = {
+        1: "1 Star — Poor",
+        2: "2 Stars — Fair",
+        3: "3 Stars — Good",
+        4: "4 Stars — Very Good",
+        5: "5 Stars — Excellent"
+    };
+
+    document.getElementById("ratingLabel").textContent =
+        labels[rating];
+}
 
 function showDepartment(department) {
 
@@ -362,7 +438,10 @@ function showTip() {
 
 }
 
-
+if (currentRating === 0) {
+    alert("Please select a star rating.");
+    return;
+}
 function showReview() {
 
     hideAll();
