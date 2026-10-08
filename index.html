@@ -82,6 +82,47 @@
         background: #555;
     }
 
+    /* STAR RATING */
+
+    .rating {
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .rating p {
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    .stars {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .star {
+        border: none;
+        background: transparent;
+        font-size: 42px;
+        color: #ccc;
+        cursor: pointer;
+        padding: 0;
+        margin: 0;
+        width: auto;
+    }
+
+    .star.selected {
+        color: #f5b301;
+    }
+
+    .rating-label {
+        text-align: center;
+        min-height: 20px;
+        margin-top: 8px;
+        color: #666;
+        font-size: 14px;
+    }
+
     textarea {
         width: 100%;
         min-height: 130px;
@@ -115,37 +156,6 @@
         font-size: 13px;
         padding: 25px;
     }
-.rating {
-    text-align: center;
-    margin: 20px 0;
-}
-
-.stars {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-}
-
-.star {
-    border: none;
-    background: transparent;
-    font-size: 42px;
-    color: #ccc;
-    cursor: pointer;
-    padding: 0;
-    margin: 0;
-    width: auto;
-}
-
-.star.selected {
-    color: #f5b301;
-}
-
-#ratingLabel {
-    margin-top: 8px;
-    color: #666;
-    font-size: 14px;
-}
 </style>
 </head>
 
@@ -153,13 +163,15 @@
 
 <header>
     <h1>Recognize Our Team</h1>
-    <p> Gratituity and/or review</p>
+    <p>Let us know when someone made your stay special.</p>
 </header>
 
 <div class="container">
 
     <!-- HOME -->
+
     <div id="home" class="card">
+
         <h2>Choose a Department</h2>
 
         <button class="button" onclick="showDepartment('laundry')">
@@ -177,11 +189,14 @@
         <button class="button" onclick="showDepartment('maintenance')">
             🔧 Maintenance
         </button>
+
     </div>
 
 
     <!-- EMPLOYEES -->
+
     <div id="employees" class="card" style="display:none;">
+
         <h2 id="departmentTitle"></h2>
 
         <div id="employeeList"></div>
@@ -189,12 +204,17 @@
         <button class="button back" onclick="goHome()">
             ← Back
         </button>
+
     </div>
 
 
     <!-- RECOGNITION CHOICE -->
+
     <div id="recognition" class="card" style="display:none;">
-        <h2>Recognize <span id="selectedEmployee"></span></h2>
+
+        <h2>
+            Recognize <span id="selectedEmployee"></span>
+        </h2>
 
         <p style="text-align:center;">
             How would you like to recognize their work?
@@ -213,81 +233,139 @@
         <button class="button back" onclick="goStaff()">
             ← Choose Someone Else
         </button>
+
     </div>
 
 
     <!-- TIP -->
+
     <div id="tip" class="card" style="display:none;">
-        <h2>Thank <span id="tipEmployee"></span></h2>
+
+        <h2>
+            Thank <span id="tipEmployee"></span>
+        </h2>
 
         <p style="text-align:center;">
             Choose a tip amount.
         </p>
 
-        <button class="button tip-button" onclick="tipSelected(5)">
+        <button class="button tip-button"
+                onclick="tipSelected(5)">
             $5
         </button>
 
-        <button class="button tip-button" onclick="tipSelected(10)">
+        <button class="button tip-button"
+                onclick="tipSelected(10)">
             $10
         </button>
 
-        <button class="button tip-button" onclick="tipSelected(20)">
+        <button class="button tip-button"
+                onclick="tipSelected(20)">
             $20
         </button>
 
-        <button class="button tip-button" onclick="tipSelected('other')">
+        <button class="button tip-button"
+                onclick="tipSelected('other')">
             Other Amount
         </button>
 
-        <button class="button back" onclick="goRecognition()">
+        <button class="button back"
+                onclick="goRecognition()">
             ← Back
         </button>
-    </div>
 
-<div class="rating">
-    <p>How would you rate your experience?</p>
-
-    <div class="stars">
-        <button class="star" onclick="selectRating(1)">★</button>
-        <button class="star" onclick="selectRating(2)">★</button>
-        <button class="star" onclick="selectRating(3)">★</button>
-        <button class="star" onclick="selectRating(4)">★</button>
-        <button class="star" onclick="selectRating(5)">★</button>
     </div>
-
-    <div id="ratingLabel">
-        Select a rating
-    </div>
-</div>
 
 
     <!-- REVIEW -->
+
     <div id="review" class="card" style="display:none;">
-        <h2>Review <span id="reviewEmployee"></span></h2>
+
+        <h2>
+            Review <span id="reviewEmployee"></span>
+        </h2>
+
+        <!-- STAR RATING -->
+
+        <div class="rating">
+
+            <p>How would you rate your experience?</p>
+
+            <div class="stars">
+
+                <button class="star"
+                        onclick="selectRating(1)"
+                        aria-label="1 star">
+                    ★
+                </button>
+
+                <button class="star"
+                        onclick="selectRating(2)"
+                        aria-label="2 stars">
+                    ★
+                </button>
+
+                <button class="star"
+                        onclick="selectRating(3)"
+                        aria-label="3 stars">
+                    ★
+                </button>
+
+                <button class="star"
+                        onclick="selectRating(4)"
+                        aria-label="4 stars">
+                    ★
+                </button>
+
+                <button class="star"
+                        onclick="selectRating(5)"
+                        aria-label="5 stars">
+                    ★
+                </button>
+
+            </div>
+
+            <div id="ratingLabel" class="rating-label">
+                Select a rating
+            </div>
+
+        </div>
+
+
+        <!-- WRITTEN REVIEW -->
 
         <p>
             Tell us about your experience with this team member.
         </p>
 
-        <textarea id="reviewText"
-                  placeholder="Write your review here..."></textarea>
+        <textarea
+            id="reviewText"
+            placeholder="Write your review here...">
+        </textarea>
+
 
         <button class="button review-button"
                 onclick="submitReview()">
             ⭐ Submit Review
         </button>
 
-        <button class="button back" onclick="goRecognition()">
+        <button class="button back"
+                onclick="goRecognition()">
             ← Back
         </button>
+
     </div>
 
 
     <!-- SUCCESS -->
+
     <div id="success" class="card" style="display:none;">
+
         <div class="success">
-            <div class="success-icon">⭐</div>
+
+            <div class="success-icon">
+                ⭐
+            </div>
 
             <h2>Thank You!</h2>
 
@@ -295,16 +373,20 @@
                 Your recognition means a lot to our team.
             </p>
 
-            <button class="button" onclick="goHome()">
+            <button class="button"
+                    onclick="goHome()">
                 Done
             </button>
+
         </div>
+
     </div>
 
 </div>
 
+
 <footer>
-    Recognition system prototype
+    Guest recognition system prototype
 </footer>
 
 
@@ -312,15 +394,16 @@
 
 const employees = {
 
-    laundry: ["Susan", "Wyatt"],
+    laundry: ["Sarah", "Mike"],
 
-    housekeeping: ["Amber", "Angie", "Tre", "Shayne"],
+    housekeeping: ["Sarah", "Mike", "Emily"],
 
-    frontdesk: ["Sarah", "Jena", "Mindy"],
+    frontdesk: ["Jessica", "David"],
 
     maintenance: ["John"]
 
 };
+
 
 const departmentNames = {
 
@@ -334,9 +417,13 @@ const departmentNames = {
 
 };
 
+
 let currentDepartment = "";
 let currentEmployee = "";
+let currentRating = 0;
 
+
+/* HIDE ALL SCREENS */
 
 function hideAll() {
 
@@ -349,35 +436,8 @@ function hideAll() {
 
 }
 
-let currentRating = 0;
 
-function selectRating(rating) {
-
-    currentRating = rating;
-
-    const stars = document.querySelectorAll(".star");
-
-    stars.forEach(function(star, index) {
-
-        if (index < rating) {
-            star.classList.add("selected");
-        } else {
-            star.classList.remove("selected");
-        }
-
-    });
-
-    const labels = {
-        1: "1 Star — Poor",
-        2: "2 Stars — Fair",
-        3: "3 Stars — Good",
-        4: "4 Stars — Very Good",
-        5: "5 Stars — Excellent"
-    };
-
-    document.getElementById("ratingLabel").textContent =
-        labels[rating];
-}
+/* SHOW DEPARTMENT */
 
 function showDepartment(department) {
 
@@ -403,7 +463,9 @@ function showDepartment(department) {
         button.textContent = employee;
 
         button.onclick = function() {
+
             selectEmployee(employee);
+
         };
 
         list.appendChild(button);
@@ -412,6 +474,8 @@ function showDepartment(department) {
 
 }
 
+
+/* SELECT EMPLOYEE */
 
 function selectEmployee(employee) {
 
@@ -427,6 +491,8 @@ function selectEmployee(employee) {
 }
 
 
+/* SHOW TIP */
+
 function showTip() {
 
     hideAll();
@@ -438,10 +504,9 @@ function showTip() {
 
 }
 
-if (currentRating === 0) {
-    alert("Please select a star rating.");
-    return;
-}
+
+/* SHOW REVIEW */
+
 function showReview() {
 
     hideAll();
@@ -451,13 +516,92 @@ function showReview() {
     document.getElementById("reviewEmployee").textContent =
         currentEmployee;
 
+    resetRating();
+
 }
 
+
+/* SELECT STAR RATING */
+
+function selectRating(rating) {
+
+    currentRating = rating;
+
+    const stars = document.querySelectorAll(".star");
+
+    stars.forEach(function(star, index) {
+
+        if (index < rating) {
+
+            star.classList.add("selected");
+
+        } else {
+
+            star.classList.remove("selected");
+
+        }
+
+    });
+
+
+    const ratingLabel =
+        document.getElementById("ratingLabel");
+
+
+    const labels = {
+
+        1: "1 Star — Poor",
+        2: "2 Stars — Fair",
+        3: "3 Stars — Good",
+        4: "4 Stars — Very Good",
+        5: "5 Stars — Excellent"
+
+    };
+
+
+    ratingLabel.textContent =
+        labels[rating];
+
+}
+
+
+/* RESET RATING */
+
+function resetRating() {
+
+    currentRating = 0;
+
+    const stars =
+        document.querySelectorAll(".star");
+
+    stars.forEach(function(star) {
+
+        star.classList.remove("selected");
+
+    });
+
+    document.getElementById("ratingLabel").textContent =
+        "Select a rating";
+
+}
+
+
+/* SUBMIT REVIEW */
 
 function submitReview() {
 
     const review =
         document.getElementById("reviewText").value.trim();
+
+
+    if (currentRating === 0) {
+
+        alert("Please select a star rating.");
+
+        return;
+
+    }
+
 
     if (review === "") {
 
@@ -467,19 +611,34 @@ function submitReview() {
 
     }
 
+
     /*
-       Later this is where we will send:
+        Later we can send this information
+        to our database:
 
-       Department
-       Employee
-       Review
-
-       to our database.
-
-       For now, we simply show confirmation.
+        Department
+        Employee
+        Star Rating
+        Written Review
     */
 
+
+    console.log("Review submitted:", {
+
+        department: currentDepartment,
+
+        employee: currentEmployee,
+
+        rating: currentRating,
+
+        review: review
+
+    });
+
+
     document.getElementById("reviewText").value = "";
+
+    resetRating();
 
     hideAll();
 
@@ -487,6 +646,8 @@ function submitReview() {
 
 }
 
+
+/* TIP */
 
 function tipSelected(amount) {
 
@@ -500,6 +661,8 @@ function tipSelected(amount) {
 }
 
 
+/* HOME */
+
 function goHome() {
 
     hideAll();
@@ -509,12 +672,16 @@ function goHome() {
 }
 
 
+/* BACK TO STAFF */
+
 function goStaff() {
 
     showDepartment(currentDepartment);
 
 }
 
+
+/* BACK TO RECOGNITION */
 
 function goRecognition() {
 
@@ -528,4 +695,3 @@ function goRecognition() {
 
 </body>
 </html>
-```
