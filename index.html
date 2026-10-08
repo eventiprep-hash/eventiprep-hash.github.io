@@ -596,7 +596,7 @@ function resetRating() {
 
 /* SUBMIT REVIEW */
 
-function submitReview() {
+async function submitReview() {
 
     const review =
         document.getElementById("reviewText").value.trim();
@@ -631,17 +631,29 @@ function submitReview() {
     */
 
 
-    console.log("Review submitted:", {
+    try {
+    const { data, error } = await supabaseClient
+        .from("reviews")
+        .insert([
+            {
+                department: currentDepartment,
+                employee: currentEmployee,
+                rating: currentRating,
+                review: review
+            }
+        ]);
 
-        department: currentDepartment,
+    if (error) {
+        throw error;
+    }
 
-        employee: currentEmployee,
+    console.log("Review saved successfully!");
 
-        rating: currentRating,
-
-        review: review
-
-    });
+} catch (error) {
+    console.error("Review save failed:", error);
+    alert("Sorry, your review could not be saved. Please try again.");
+    return;
+};
 
 
     document.getElementById("reviewText").value = "";
