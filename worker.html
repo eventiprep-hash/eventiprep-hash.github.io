@@ -1,0 +1,304 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eventiprep | Personal Recognition</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    padding: 20px;
+    background: #f3f5f7;
+    color: #263449;
+    font-family: Arial, sans-serif;
+}
+
+main {
+    max-width: 460px;
+    margin: 25px auto;
+}
+
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 18px #0000000b;
+}
+
+.brand {
+    text-align: center;
+    font-size: 13px;
+    letter-spacing: 3px;
+    font-weight: bold;
+    color: #536b8b;
+}
+
+.profile { text-align: center; }
+
+.avatar {
+    width: 76px;
+    height: 76px;
+    margin: 18px auto;
+    border-radius: 50%;
+    background: #e5ebf3;
+    display: grid;
+    place-items: center;
+    font-size: 32px;
+}
+
+h1 { margin: 8px 0; font-size: 27px; }
+h2 { font-size: 20px; }
+p { line-height: 1.5; color: #586579; }
+
+button, textarea {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    border-radius: 9px;
+    font-size: 16px;
+}
+
+button {
+    border: 0;
+    background: #263f65;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button.secondary {
+    color: #263f65;
+    background: white;
+    border: 1px solid #263f65;
+}
+
+button:disabled { opacity: .6; }
+
+textarea {
+    border: 1px solid #ccd4df;
+    resize: vertical;
+}
+
+.stars {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.stars button {
+    padding: 4px;
+    margin: 4px 0;
+    background: transparent;
+    color: #c4cbd5;
+    font-size: 34px;
+}
+
+.stars button.selected { color: #e5a000; }
+
+#status {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font-size: 14px;
+}
+
+footer {
+    text-align: center;
+    font-size: 12px;
+    color: #7a8595;
+    padding: 10px;
+}
+</style>
+</head>
+<body>
+<main>
+    <section class="card">
+        <div class="brand">EVENTIPREP</div>
+
+        <div class="profile">
+            <div class="avatar" aria-hidden="true">✦</div>
+            <h1>Thank you for your stay!</h1>
+            <h2>You've been cared for by Sarah</h2>
+            <p>
+                If you appreciated the care and attention
+                that went into your room, you can leave a
+                personal review below.
+            </p>
+        </div>
+
+        <button id="reviewButton" type="button">
+            ⭐ Leave a Review
+        </button>
+
+        <button class="secondary" id="tipButton" type="button">
+            ♡ Leave a Tip
+        </button>
+
+        <p id="status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="card" id="reviewCard" hidden>
+        <h2>Review Sarah</h2>
+        <p>How would you rate your experience?</p>
+
+        <div class="stars" aria-label="Choose a star rating">
+            <button type="button" data-rating="1"
+                aria-label="1 star">★</button>
+            <button type="button" data-rating="2"
+                aria-label="2 stars">★</button>
+            <button type="button" data-rating="3"
+                aria-label="3 stars">★</button>
+            <button type="button" data-rating="4"
+                aria-label="4 stars">★</button>
+            <button type="button" data-rating="5"
+                aria-label="5 stars">★</button>
+        </div>
+
+        <p id="ratingLabel">Select a rating</p>
+
+        <form id="reviewForm">
+            <textarea id="reviewText" rows="4"
+                maxlength="2000"
+                placeholder="Write a few words about your experience..."
+                required></textarea>
+
+            <button id="submitButton" type="submit">
+                Submit Review
+            </button>
+
+            <button class="secondary" id="cancelButton"
+                type="button">Cancel</button>
+        </form>
+    </section>
+
+    <footer>
+        Personal guest recognition powered by Eventiprep
+    </footer>
+</main>
+
+<script>
+const SUPABASE_URL = "PASTE_YOUR_PROJECT_URL_HERE";
+const SUPABASE_KEY = "PASTE_YOUR_PUBLISHABLE_KEY_HERE";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+// Demo profile. We'll make this database-driven later.
+const worker = {
+    name: "Sarah",
+    department: "Housekeeping"
+};
+
+let currentRating = 0;
+
+const reviewCard = document.getElementById("reviewCard");
+const status = document.getElementById("status");
+const ratingLabel = document.getElementById("ratingLabel");
+const ratingButtons = document.querySelectorAll("[data-rating]");
+
+document.getElementById("reviewButton").addEventListener(
+    "click", function() {
+        reviewCard.hidden = false;
+        reviewCard.scrollIntoView({ behavior: "smooth" });
+    }
+);
+
+document.getElementById("tipButton").addEventListener(
+    "click", function() {
+        status.textContent =
+            "Online tipping is not enabled yet. Please use an approved tip method at your property.";
+    }
+);
+
+function selectRating(rating) {
+    currentRating = rating;
+
+    ratingButtons.forEach(function(button) {
+        const selected = Number(button.dataset.rating) <= rating;
+        button.classList.toggle("selected", selected);
+        button.setAttribute("aria-pressed", String(
+            Number(button.dataset.rating) === rating
+        ));
+    });
+
+    const labels = {
+        1: "1 Star — Poor",
+        2: "2 Stars — Fair",
+        3: "3 Stars — Good",
+        4: "4 Stars — Very Good",
+        5: "5 Stars — Excellent"
+    };
+
+    ratingLabel.textContent = labels[rating];
+}
+
+ratingButtons.forEach(function(button) {
+    button.addEventListener("click", function() {
+        selectRating(Number(button.dataset.rating));
+    });
+});
+
+document.getElementById("cancelButton").addEventListener(
+    "click", function() {
+        reviewCard.hidden = true;
+        status.textContent = "";
+    }
+);
+
+document.getElementById("reviewForm").addEventListener(
+    "submit", async function(event) {
+        event.preventDefault();
+
+        const review = document.getElementById("reviewText")
+            .value.trim();
+
+        if (currentRating < 1 || currentRating > 5) {
+            status.textContent = "Please select a star rating.";
+            return;
+        }
+
+        if (!review) {
+            status.textContent = "Please write a short review.";
+            return;
+        }
+
+        const submitButton = document.getElementById("submitButton");
+        submitButton.disabled = true;
+        status.textContent = "Submitting review...";
+
+        try {
+            const { error } = await supabaseClient
+                .from("reviews")
+                .insert([{
+                    department: worker.department,
+                    employee: worker.name,
+                    rating: currentRating,
+                    review: review
+                }]);
+
+            if (error) throw error;
+
+            document.getElementById("reviewForm").reset();
+            selectRating(0);
+            reviewCard.hidden = true;
+            status.textContent = "Thank you! Your review was submitted.";
+        } catch (error) {
+            console.error("Review submission failed:", error);
+            status.textContent =
+                "Your review could not be saved. Please try again.";
+        } finally {
+            submitButton.disabled = false;
+        }
+    }
+);
+
+selectRating(0);
+</script>
+</body>
+</html>
