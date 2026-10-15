@@ -165,8 +165,26 @@ footer {
 
         <p id="ratingLabel">Select a rating</p>
 
-        <form id="reviewForm">
-            <textarea id="reviewText" rows="4"
+        
+<form id="reviewForm">
+    <label for="roomNumber">Your hotel room number</label>
+    <input
+        id="roomNumber"
+        type="text"
+        inputmode="numeric"
+        pattern="[0-9]{3}"
+        maxlength="3"
+        placeholder="e.g. 101"
+        autocomplete="off"
+        required
+        style="width:100%;padding:14px;margin-top:10px;border:1px solid #ccd4df;border-radius:9px;font-size:16px;"
+    >
+
+    <textarea id="reviewText" rows="4"
+        maxlength="2000"
+        placeholder="Write a few words about your experience..."
+        required></textarea>
+
                 maxlength="2000"
                 placeholder="Write a few words about your experience..."
                 required></textarea>
