@@ -180,14 +180,13 @@ footer {
         style="width:100%;padding:14px;margin-top:10px;border:1px solid #ccd4df;border-radius:9px;font-size:16px;"
     >
 
-    <textarea id="reviewText" rows="4"
-        maxlength="2000"
-        placeholder="Write a few words about your experience..."
-        required></textarea>
-
-                maxlength="2000"
-                placeholder="Write a few words about your experience..."
-                required></textarea>
+    <textarea
+    id="reviewText"
+    rows="4"
+    maxlength="2000"
+    placeholder="Write a few words about your experience..."
+    required
+></textarea>
 
             <button id="submitButton" type="submit">
                 Submit Review
@@ -391,44 +390,21 @@ document.getElementById("reviewForm").addEventListener(
 
         const review = document.getElementById("reviewText")
             .value.trim();
-if (!worker) {
-    status.textContent = "Worker profile is not ready. Please reload the page.";
+const roomNumber = document.getElementById("roomNumber").value.trim();
+const validRooms = new Set([
+    ...Array.from({ length: 8 }, (_, i) => String(101 + i)),
+    ...Array.from({ length: 22 }, (_, i) => String(151 + i)),
+    ...Array.from({ length: 21 }, (_, i) => String(252 + i)),
+    ...Array.from({ length: 11 }, (_, i) => String(301 + i)),
+    ...Array.from({ length: 11 }, (_, i) => String(401 + i))
+]);
+
+if (!validRooms.has(roomNumber)) {
+    status.textContent = "Please enter a valid hotel room number.";
     return;
 }
-
-const reviewLimitKey = "eventiprep_reviews_" + worker.id;
-const reviewLimit = 3;
-const reviewWindowMs = 3 * 60 * 60 * 1000;
-
-let reviewTimestamps = [];
-
-try {
-    const saved = JSON.parse(
-        localStorage.getItem(reviewLimitKey) || "[]"
-    );
-
-    if (Array.isArray(saved)) {
-        reviewTimestamps = saved.filter(
-            timestamp =>
-                Number.isFinite(timestamp) &&
-                timestamp > Date.now() - reviewWindowMs &&
-                timestamp <= Date.now()
-        );
-    }
-} catch (error) {
-    reviewTimestamps = [];
-}
-
-if (reviewTimestamps.length >= reviewLimit) {
-    const oldestAllowedTime = Math.min(...reviewTimestamps);
-    const minutesLeft = Math.ceil(
-        (oldestAllowedTime + reviewWindowMs - Date.now()) / 60000
-    );
-
-    status.textContent =
-        "You've reached the limit of 3 reviews for this worker " +
-        "within 3 hours. Please try again in about " +
-        minutesLeft + " minute(s).";
+if (!worker) {
+    status.textContent = "Worker profile is not ready. Please reload the page.";
     return;
 }
 
@@ -447,42 +423,44 @@ if (reviewTimestamps.length >= reviewLimit) {
         submitButton.disabled = true;
         status.textContent = "Submitting review...";
 
+        
         try {
-const { error } = await supabaseClient
-    .from("reviews")
-    .insert([{
-        worker_id: worker.id,
-        department: worker.department,
-        employee: worker.name,
-        rating: currentRating,
-        review: review
-    }]);
+            const { error } = await supabaseClient
+                .from("reviews")
+                .insert([{
+                    worker_id: worker.id,
+                    department: worker.department,
+                    employee: worker.name,
+                    rating: currentRating,
+                    review: review,
+                    room_number: roomNumber
+                }]);
 
-            if (error) throw error;
+            if (error) {
+                if (error.code === "23505") {
+                    status.textContent =
+                        "This room has already reviewed this worker for the current hotel day.";
+                    return;
+                }
 
-reviewTimestamps.push(Date.now());
-
-try {
-    localStorage.setItem(
-        reviewLimitKey,
-        JSON.stringify(reviewTimestamps)
-    );
-} catch (storageError) {
-    console.warn("Could not save review limit.");
-}
-
+                throw error;
+            }
 
             document.getElementById("reviewForm").reset();
             selectRating(0);
             reviewCard.hidden = true;
-            status.textContent = "Thank you! Your review was submitted.";
+            status.textContent =
+                "Thank you! Your review was submitted.";
+
         } catch (error) {
             console.error("Review submission failed:", error);
             status.textContent =
-                "Your review could not be saved. Please try again.";
+                "Your review could not be saved. Please check the room number and try again.";
+
         } finally {
             submitButton.disabled = false;
         }
+
     }
 );
 
