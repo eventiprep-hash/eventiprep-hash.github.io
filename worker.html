@@ -329,14 +329,16 @@ if (!worker) {
         status.textContent = "Submitting review...";
 
         try {
-            const { error } = await supabaseClient
-                .from("reviews")
-                .insert([{
-                    department: worker.department,
-                    employee: worker.name,
-                    rating: currentRating,
-                    review: review
-                }]);
+        const { error } = await supabaseClient
+    .from("reviews")
+    .insert([{
+        worker_id: worker.id,
+        department: worker.department,
+        employee: worker.name,
+        rating: currentRating,
+        review: review
+    }]);
+
 
             if (error) throw error;
 
