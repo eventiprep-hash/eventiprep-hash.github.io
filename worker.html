@@ -123,6 +123,11 @@ footer {
             <div class="avatar" aria-hidden="true">✦</div>
             <h1>Thank you for your stay!</h1>
             <h2>You've been cared for by <span id="workerName">Loading...</span></h2>
+<div id="averageRating"
+     style="font-size:18px;font-weight:bold;margin:12px 0;"
+     aria-live="polite">
+    Rating: Loading...
+</div>
             <p>
                 If you appreciated the care and attention
                 that went into your room, you can leave a
@@ -227,14 +232,36 @@ async function loadWorker() {
         }
 
         worker = data;
-console.log("Loaded worker:", worker);
-console.log("Worker ID:", worker.id);
+worker = data;
 
         document.getElementById("workerName").textContent =
             worker.name;
 
         document.getElementById("reviewWorkerName").textContent =
             worker.name;
+const ratingElement = document.getElementById("averageRating");
+ratingElement.textContent = "Rating: Loading...";
+
+const { data: average, error: ratingError } =
+    await supabaseClient.rpc("get_worker_average_rating", {
+        p_worker_id: worker.id
+    });
+
+if (ratingError) {
+    console.error("Rating load failed:", ratingError);
+    ratingElement.textContent = "Average rating unavailable";
+} else if (average === null || average === undefined) {
+    ratingElement.textContent = "☆ No ratings yet";
+} else {
+    const value = Number(average);
+
+    if (Number.isFinite(value) && value >= 0 && value <= 5) {
+        ratingElement.textContent =
+            "★ " + value.toFixed(1) + " / 5 average";
+    } else {
+        ratingElement.textContent = "Average rating unavailable";
+    }
+}
 
         status.textContent = "";
     } catch (error) {
