@@ -100,11 +100,26 @@ textarea {
 
 .stars button.selected { color: #e5a000; }
 
+
 #status {
     white-space: pre-wrap;
     overflow-wrap: anywhere;
     font-size: 14px;
+    font-weight: bold;
 }
+
+#status.error {
+    color: #c62828;
+}
+
+#status.success {
+    color: #218739;
+}
+
+#status.info {
+    color: #586579;
+}
+
 
 footer {
     text-align: center;
@@ -216,6 +231,10 @@ let worker = null;
 
 async function loadWorker() {
     const status = document.getElementById("status");
+function showStatus(message, type = "info") {
+    status.textContent = message;
+    status.className = type;
+}
     const workerId = new URLSearchParams(
         window.location.search
     ).get("id");
@@ -344,8 +363,7 @@ document.getElementById("reviewButton").addEventListener(
 
 document.getElementById("tipButton").addEventListener(
     "click", function() {
-        status.textContent =
-            "Online tipping is not enabled yet. Please use an approved tip method at your property.";
+        showStatus("Online tipping is not enabled yet. Please use an approved tip method at your property.", "error");
     }
 );
 
@@ -400,22 +418,22 @@ const validRooms = new Set([
 ]);
 
 if (!validRooms.has(roomNumber)) {
-    status.textContent = "Please enter a valid hotel room number.";
+    showStatus("Please enter a valid hotel room number.", "error");
     return;
 }
 if (!worker) {
-    status.textContent = "Worker profile is not ready. Please reload the page.";
+    showStatus("Worker profile is not ready. Please reload the page.", "error");
     return;
 }
 
 
         if (currentRating < 1 || currentRating > 5) {
-            status.textContent = "Please select a star rating.";
+            showStatus("Please select a star rating.");
             return;
         }
 
         if (!review) {
-            status.textContent = "Please write a short review.";
+            showStatus("Please write a short review.");
             return;
         }
 
@@ -438,8 +456,7 @@ if (!worker) {
 
             if (error) {
                 if (error.code === "23505") {
-                    status.textContent =
-                        "This room has already reviewed this worker for the current hotel day.";
+                    showStatus("This room has already reviewed this worker for the current hotel day.", "error");
                     return;
                 }
 
@@ -449,13 +466,11 @@ if (!worker) {
             document.getElementById("reviewForm").reset();
             selectRating(0);
             reviewCard.hidden = true;
-            status.textContent =
-                "Thank you! Your review was submitted.";
+            showStatus("Thank you! Your review was submitted.", "Success!");
 
         } catch (error) {
             console.error("Review submission failed:", error);
-            status.textContent =
-                "Your review could not be saved. Please check the room number and try again.";
+            showStatus("Your review could not be saved. Please check the room number and try again.", "error");
 
         } finally {
             submitButton.disabled = false;
