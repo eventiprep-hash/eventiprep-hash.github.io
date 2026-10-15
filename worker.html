@@ -227,6 +227,8 @@ async function loadWorker() {
         }
 
         worker = data;
+console.log("Loaded worker:", worker);
+console.log("Worker ID:", worker.id);
 
         document.getElementById("workerName").textContent =
             worker.name;
@@ -329,7 +331,7 @@ if (!worker) {
         status.textContent = "Submitting review...";
 
         try {
-        const { error } = await supabaseClient
+const { error } = await supabaseClient
     .from("reviews")
     .insert([{
         worker_id: worker.id,
@@ -338,7 +340,6 @@ if (!worker) {
         rating: currentRating,
         review: review
     }]);
-
 
             if (error) throw error;
 
