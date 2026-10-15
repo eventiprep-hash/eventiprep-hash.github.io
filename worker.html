@@ -334,9 +334,15 @@ if (ratingError) {
 
 
         showStatus("");
-    } catch (error) {
-        console.error("Worker profile failed to load:", error);
-        showStatus("Could not load this worker profile. Please try again.", "error");
+    
+} catch (error) {
+    console.error("Review submission failed:", error);
+    showStatus(
+        "Error " + (error.code || "unknown") + ": " +
+        (error.message || "No error message returned"),
+        "error"
+    );
+
         document.getElementById("reviewButton").disabled = true;
         document.getElementById("tipButton").disabled = true;
     }
