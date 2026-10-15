@@ -378,6 +378,43 @@ if (!worker) {
     return;
 }
 
+const reviewLimitKey = "eventiprep_reviews_" + worker.id;
+const reviewLimit = 3;
+const reviewWindowMs = 3 * 60 * 60 * 1000;
+
+let reviewTimestamps = [];
+
+try {
+    const saved = JSON.parse(
+        localStorage.getItem(reviewLimitKey) || "[]"
+    );
+
+    if (Array.isArray(saved)) {
+        reviewTimestamps = saved.filter(
+            timestamp =>
+                Number.isFinite(timestamp) &&
+                timestamp > Date.now() - reviewWindowMs &&
+                timestamp <= Date.now()
+        );
+    }
+} catch (error) {
+    reviewTimestamps = [];
+}
+
+if (reviewTimestamps.length >= reviewLimit) {
+    const oldestAllowedTime = Math.min(...reviewTimestamps);
+    const minutesLeft = Math.ceil(
+        (oldestAllowedTime + reviewWindowMs - Date.now()) / 60000
+    );
+
+    status.textContent =
+        "You've reached the limit of 3 reviews for this worker " +
+        "within 3 hours. Please try again in about " +
+        minutesLeft + " minute(s).";
+    return;
+}
+
+
         if (currentRating < 1 || currentRating > 5) {
             status.textContent = "Please select a star rating.";
             return;
@@ -404,6 +441,18 @@ const { error } = await supabaseClient
     }]);
 
             if (error) throw error;
+
+reviewTimestamps.push(Date.now());
+
+try {
+    localStorage.setItem(
+        reviewLimitKey,
+        JSON.stringify(reviewTimestamps)
+    );
+} catch (storageError) {
+    console.warn("Could not save review limit.");
+}
+
 
             document.getElementById("reviewForm").reset();
             selectRating(0);
