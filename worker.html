@@ -239,8 +239,12 @@ worker = data;
 
         document.getElementById("reviewWorkerName").textContent =
             worker.name;
+
 const ratingElement = document.getElementById("averageRating");
-ratingElement.textContent = "Rating: Loading...";
+
+ratingElement.style.fontSize = "30px";
+ratingElement.style.letterSpacing = "2px";
+ratingElement.setAttribute("role", "img");
 
 const { data: average, error: ratingError } =
     await supabaseClient.rpc("get_worker_average_rating", {
@@ -249,19 +253,50 @@ const { data: average, error: ratingError } =
 
 if (ratingError) {
     console.error("Rating load failed:", ratingError);
-    ratingElement.textContent = "Average rating unavailable";
+    ratingElement.textContent = "Rating unavailable";
+    ratingElement.removeAttribute("role");
 } else if (average === null || average === undefined) {
-    ratingElement.textContent = "☆ No ratings yet";
+    ratingElement.textContent = "☆☆☆☆☆";
+    ratingElement.style.color = "#cbd2dc";
+    ratingElement.setAttribute("aria-label", "No ratings yet");
 } else {
     const value = Number(average);
 
     if (Number.isFinite(value) && value >= 0 && value <= 5) {
-        ratingElement.textContent =
-            "★ " + value.toFixed(1) + " / 5 average";
+        ratingElement.replaceChildren();
+
+        const stars = document.createElement("span");
+        stars.style.position = "relative";
+        stars.style.display = "inline-block";
+        stars.style.lineHeight = "1";
+        stars.style.color = "#d6dce5";
+        stars.textContent = "★★★★★";
+
+        const fill = document.createElement("span");
+        fill.style.position = "absolute";
+        fill.style.left = "0";
+        fill.style.top = "0";
+        fill.style.width = (value / 5 * 100) + "%";
+        fill.style.overflow = "hidden";
+        fill.style.whiteSpace = "nowrap";
+        fill.style.color = "#e5a000";
+        fill.style.display = "block";
+        fill.textContent = "★★★★★";
+
+        stars.appendChild(fill);
+        ratingElement.appendChild(stars);
+
+        ratingElement.setAttribute(
+            "aria-label",
+            "Average rating: " + value.toFixed(1) + " out of 5"
+        );
+        ratingElement.title = value.toFixed(1) + " out of 5";
     } else {
-        ratingElement.textContent = "Average rating unavailable";
+        ratingElement.textContent = "Rating unavailable";
+        ratingElement.removeAttribute("role");
     }
 }
+
 
         status.textContent = "";
     } catch (error) {
