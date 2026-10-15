@@ -68,15 +68,75 @@
   </section>
 </main>
 
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+  const SUPABASE_URL = "https://yuhayqoqikszpgalyyji.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_rwW3x1tgFX0TW3sP8U2mXg_6hb_nsCI";
+
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
   let generatedLink = "";
+
+  async function loadEmployees() {
+    const nameInput = document.getElementById("workerName");
+    const idInput = document.getElementById("workerId");
+
+    nameInput.placeholder = "Loading employees...";
+
+    const { data, error } = await supabaseClient
+      .from("employees")
+      .select("id, name, department")
+      .eq("active", true)
+      .order("name");
+
+    if (error) {
+      nameInput.placeholder = "Could not load employees";
+      alert("Employee loading failed: " + error.message);
+      return;
+    }
+
+    nameInput.placeholder = "Choose a worker below";
+
+    const select = document.createElement("select");
+    select.id = "employeeSelect";
+    select.style.cssText =
+      "box-sizing:border-box;width:100%;padding:13px;margin:8px 0 16px;font-size:16px";
+
+    const firstOption = document.createElement("option");
+    firstOption.value = "";
+    firstOption.textContent = "Select an employee";
+    select.appendChild(firstOption);
+
+    data.forEach(employee => {
+      const option = document.createElement("option");
+      option.value = employee.id;
+      option.textContent =
+        employee.name + " — " + employee.department;
+      option.dataset.name = employee.name;
+      select.appendChild(option);
+    });
+
+    nameInput.hidden = true;
+    idInput.hidden = true;
+    nameInput.before(select);
+
+    select.addEventListener("change", () => {
+      const chosen = select.options[select.selectedIndex];
+      nameInput.value = chosen.dataset.name || "";
+      idInput.value = select.value;
+    });
+  }
 
   function makeCard() {
     const name = document.getElementById("workerName").value.trim();
     const id = document.getElementById("workerId").value.trim();
 
     if (!name || !/^[1-9]\d*$/.test(id)) {
-      alert("Enter a worker name and a valid worker ID.");
+      alert("Select a valid employee first.");
       return;
     }
 
@@ -101,6 +161,9 @@
       prompt("Copy this worker link:", generatedLink);
     }
   }
+
+  loadEmployees();
 </script>
+
 </body>
 </html>
