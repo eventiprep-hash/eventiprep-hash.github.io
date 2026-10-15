@@ -122,7 +122,7 @@ footer {
         <div class="profile">
             <div class="avatar" aria-hidden="true">✦</div>
             <h1>Thank you for your stay!</h1>
-            <h2>You've been cared for by Sarah</h2>
+            <h2>You've been cared for by <span id="workerName">Loading...</span></h2>
             <p>
                 If you appreciated the care and attention
                 that went into your room, you can leave a
@@ -142,7 +142,7 @@ footer {
     </section>
 
     <section class="card" id="reviewCard" hidden>
-        <h2>Review Sarah</h2>
+        <h2>Review <span id="reviewWorkerName">this worker</span></h2>
         <p>How would you rate your experience?</p>
 
         <div class="stars" aria-label="Choose a star rating">
@@ -189,11 +189,63 @@ const supabaseClient = window.supabase.createClient(
     SUPABASE_KEY
 );
 
-// Demo profile. We'll make this database-driven later.
-const worker = {
-    name: "Sarah",
-    department: "Housekeeping"
-};
+
+let worker = null;
+
+async function loadWorker() {
+    const status = document.getElementById("status");
+    const workerId = new URLSearchParams(
+        window.location.search
+    ).get("id");
+
+    if (!workerId || !/^\d+$/.test(workerId)) {
+        status.textContent =
+            "This worker link is missing or invalid.";
+        document.getElementById("reviewButton").disabled = true;
+        document.getElementById("tipButton").disabled = true;
+        return;
+    }
+
+    status.textContent = "Loading worker profile...";
+
+    try {
+        const { data, error } = await supabaseClient
+            .from("employees")
+            .select("id, name, department")
+            .eq("id", Number(workerId))
+            .eq("active", true)
+            .maybeSingle();
+
+        if (error) throw error;
+
+        if (!data) {
+            status.textContent =
+                "This worker profile is unavailable.";
+            document.getElementById("reviewButton").disabled = true;
+            document.getElementById("tipButton").disabled = true;
+            return;
+        }
+
+        worker = data;
+
+        document.getElementById("workerName").textContent =
+            worker.name;
+
+        document.getElementById("reviewWorkerName").textContent =
+            worker.name;
+
+        status.textContent = "";
+    } catch (error) {
+        console.error("Worker profile failed to load:", error);
+        status.textContent =
+            "Could not load this worker profile. Please try again.";
+        document.getElementById("reviewButton").disabled = true;
+        document.getElementById("tipButton").disabled = true;
+    }
+}
+
+loadWorker();
+
 
 let currentRating = 0;
 
@@ -257,6 +309,10 @@ document.getElementById("reviewForm").addEventListener(
 
         const review = document.getElementById("reviewText")
             .value.trim();
+if (!worker) {
+    status.textContent = "Worker profile is not ready. Please reload the page.";
+    return;
+}
 
         if (currentRating < 1 || currentRating > 5) {
             status.textContent = "Please select a star rating.";
