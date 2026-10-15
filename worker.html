@@ -471,13 +471,16 @@ if (!worker) {
             reviewCard.hidden = true;
             showStatus("Thank you! Your review was submitted.", "success");
 
-        } catch (error) {
-            console.error("Review submission failed:", error);
-            showStatus("Your review could not be saved. Please check the room number and try again.", "error");
+        
+} catch (error) {
+    console.error("Review submission failed:", error);
+    showStatus(
+        "Error " + (error.code || "unknown") + ": " +
+        (error.message || "No error message returned"),
+        "error"
+    );
+}
 
-        } finally {
-            submitButton.disabled = false;
-        }
 
     }
 );
