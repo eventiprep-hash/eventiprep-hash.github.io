@@ -240,14 +240,13 @@ function showStatus(message, type = "info") {
     ).get("id");
 
     if (!workerId || !/^\d+$/.test(workerId)) {
-        status.textContent =
-            "This worker link is missing or invalid.";
+        showStatus("This worker link is missing or invalid.", "error");
         document.getElementById("reviewButton").disabled = true;
         document.getElementById("tipButton").disabled = true;
         return;
     }
 
-    status.textContent = "Loading worker profile...";
+    showStatus("Loading worker profile...", "info");
 
     try {
         const { data, error } = await supabaseClient
@@ -260,8 +259,7 @@ function showStatus(message, type = "info") {
         if (error) throw error;
 
         if (!data) {
-            status.textContent =
-                "This worker profile is unavailable.";
+            showStatus("This worker profile is unavailable.", "error");
             document.getElementById("reviewButton").disabled = true;
             document.getElementById("tipButton").disabled = true;
             return;
@@ -337,8 +335,7 @@ if (ratingError) {
         status.textContent = "";
     } catch (error) {
         console.error("Worker profile failed to load:", error);
-        status.textContent =
-            "Could not load this worker profile. Please try again.";
+        showStatus("Could not load this worker profile. Please try again.", "error");
         document.getElementById("reviewButton").disabled = true;
         document.getElementById("tipButton").disabled = true;
     }
@@ -428,18 +425,18 @@ if (!worker) {
 
 
         if (currentRating < 1 || currentRating > 5) {
-            showStatus("Please select a star rating.");
+            showStatus("Please select a star rating.", "info");
             return;
         }
 
         if (!review) {
-            showStatus("Please write a short review.");
+            showStatus("Please write a short review.", "info");
             return;
         }
 
         const submitButton = document.getElementById("submitButton");
         submitButton.disabled = true;
-        status.textContent = "Submitting review...";
+        showStatus("Submitting review...", "info");
 
         
         try {
