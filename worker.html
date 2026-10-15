@@ -268,6 +268,7 @@ async function loadWorker() {
         }
 
         worker = data;
+worker = data;
 
         document.getElementById("workerName").textContent =
             worker.name;
@@ -334,15 +335,9 @@ if (ratingError) {
 
 
         showStatus("");
-    
-} catch (error) {
-    console.error("Review submission failed:", error);
-    showStatus(
-        "Error " + (error.code || "unknown") + ": " +
-        (error.message || "No error message returned"),
-        "error"
-    );
-
+    } catch (error) {
+        console.error("Worker profile failed to load:", error);
+        showStatus("Could not load this worker profile. Please try again.", "error");
         document.getElementById("reviewButton").disabled = true;
         document.getElementById("tipButton").disabled = true;
     }
@@ -471,16 +466,13 @@ if (!worker) {
             reviewCard.hidden = true;
             showStatus("Thank you! Your review was submitted.", "success");
 
-        
-} catch (error) {
-    console.error("Review submission failed:", error);
-    showStatus(
-        "Error " + (error.code || "unknown") + ": " +
-        (error.message || "No error message returned"),
-        "error"
-    );
-}
+        } catch (error) {
+            console.error("Review submission failed:", error);
+            showStatus("Your review could not be saved. Please check the room number and try again.", "error");
 
+        } finally {
+            submitButton.disabled = false;
+        }
 
     }
 );
