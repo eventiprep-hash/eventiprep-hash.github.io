@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Eventiprep QR Card Maker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 520px;
+      margin: 30px auto;
+      padding: 20px;
+      color: #222;
+      background: #f5f7f8;
+    }
+    main {
+      background: white;
+      padding: 24px;
+      border-radius: 14px;
+    }
+    input, button {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 13px;
+      margin: 8px 0 16px;
+      font-size: 16px;
+    }
+    button {
+      background: #16794b;
+      color: white;
+      border: 0;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+    #result { text-align: center; overflow-wrap: anywhere; }
+    #qr { max-width: 240px; width: 100%; }
+    a { color: #16794b; }
+    .muted { color: #666; font-size: 14px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Eventiprep</h1>
+  <h2>Worker QR Card Maker</h2>
+  <p class="muted">
+    Create a personal review link and QR code for a worker.
+  </p>
+
+  <label for="workerName">Worker name</label>
+  <input id="workerName" placeholder="Example: Sarah Demo">
+
+  <label for="workerId">Worker ID</label>
+  <input id="workerId" type="number" min="1"
+         placeholder="Example: 1">
+
+  <button onclick="makeCard()">Generate QR Card</button>
+
+  <section id="result" hidden>
+    <h2 id="cardName"></h2>
+    <img id="qr" alt="Worker QR code">
+    <p>Scan to leave a review</p>
+    <p id="workerLink"></p>
+    <button onclick="copyLink()">Copy Worker Link</button>
+    <p class="muted">
+      Test the link and scan the QR code before printing.
+    </p>
+  </section>
+</main>
+
+<script>
+  let generatedLink = "";
+
+  function makeCard() {
+    const name = document.getElementById("workerName").value.trim();
+    const id = document.getElementById("workerId").value.trim();
+
+    if (!name || !/^[1-9]\d*$/.test(id)) {
+      alert("Enter a worker name and a valid worker ID.");
+      return;
+    }
+
+    generatedLink =
+      "https://eventiprep-hash.github.io/worker.html?id=" +
+      encodeURIComponent(id);
+
+    document.getElementById("cardName").textContent = name;
+    document.getElementById("workerLink").textContent = generatedLink;
+    document.getElementById("qr").src =
+      "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" +
+      encodeURIComponent(generatedLink);
+
+    document.getElementById("result").hidden = false;
+  }
+
+  async function copyLink() {
+    try {
+      await navigator.clipboard.writeText(generatedLink);
+      alert("Worker link copied.");
+    } catch (error) {
+      prompt("Copy this worker link:", generatedLink);
+    }
+  }
+</script>
+</body>
+</html>
